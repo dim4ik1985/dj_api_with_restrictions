@@ -10,7 +10,7 @@ DATA = {
         'макароны, г': 0.3,
         'сыр, г': 0.05,
     },
-    'buter': {
+    'butter': {
         'хлеб, ломтик': 1,
         'колбаса, ломтик': 1,
         'сыр, ломтик': 1,
@@ -18,6 +18,7 @@ DATA = {
     },
     # можете добавить свои рецепты ;)
 }
+
 
 # Напишите ваш обработчик. Используйте DATA как источник данных
 # Результат - render(request, 'calculator/index.html', context)
@@ -28,3 +29,20 @@ DATA = {
 #     'ингредиент2': количество2,
 #   }
 # }
+
+def calc_ingredients(request, recipe):
+    dict_new = {}
+    servings = int(request.GET.get('servings', 1))
+    if DATA.get(recipe):
+        for key, val in DATA[recipe].items():
+            dict_new[key] = val * servings
+        context = {
+            'recipe': dict_new,
+            'servings': servings
+        }
+    else:
+        context = {
+            'recipe': None,
+            'servings': servings
+        }
+    return render(request, 'calculator/index.html', context)
