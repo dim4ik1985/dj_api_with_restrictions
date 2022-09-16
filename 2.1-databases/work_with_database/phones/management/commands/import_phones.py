@@ -5,6 +5,8 @@ from phones.models import Phone
 
 
 class Command(BaseCommand):
+    help = 'Import data'
+
     def add_arguments(self, parser):
         pass
 
@@ -14,4 +16,4 @@ class Command(BaseCommand):
 
         for phone in phones:
             # TODO: Добавьте сохранение модели
-            pass
+            Phone.objects.create(**phone)
