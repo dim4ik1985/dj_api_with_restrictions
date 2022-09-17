@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from django.db import models
+from django.urls import reverse
 
 
 class Book(models.Model):
@@ -10,3 +11,4 @@ class Book(models.Model):
 
     def __str__(self):
         return self.name + " " + self.author
+

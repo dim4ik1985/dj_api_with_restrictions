@@ -9,14 +9,26 @@
         </div>
         <div class="row">
             <div class="book col-md-4">
-                <h2>Сияние</h2>
-                <p>Автор: Стивен Кинг</p>
-                <p>Дата публикации: 2018-09-10</p>
+                {% for b in books %}
+                    <h2><a href="#">{{ b.name }}</a></h2>
+                    <p>Автор: {{ b.author }}</p>
+                    <p>Дата публикации: <a href="{% url 'book' b.pub_date %}">{{ b.pub_date | date:"Y-m-d" }}</a></p>
+                {% endfor %}
             </div>
+        </div>
+        <div class="row">
             <div class="book col-md-4">
-                <h2>1984</h2>
-                <p>Автор: Джордж Оруэл</p>
-                <p>Дата публикации: 2015-03-11</p>
+                {% for b in book %}
+                    <h2><a href="">{{ b.name }}</a></h2>
+                    <p>Автор: {{ b.author }}</p>
+                    <p>Дата публикации: {{ b.pub_date | date:"Y-m-d" }}</p>
+                {% endfor %}
+                {% if not prev is None %}
+                    <a href="{% url 'book' prev.pub_date|date:"Y-m-d" %}">< {{ prev.pub_date | date:"Y-m-d" }}</a>
+                {% endif %}
+                {% if not next is None %}
+                    <a href="{% url 'book' next.pub_date|date:"Y-m-d" %}"> {{ next.pub_date | date:"Y-m-d" }} ></a>
+                {% endif %}
             </div>
         </div>
     </div>
