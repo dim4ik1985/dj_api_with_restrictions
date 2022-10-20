@@ -28,3 +28,6 @@ class Advertisement(models.Model):
     updated_at = models.DateTimeField(
         auto_now=True
     )
+    draft = models.BooleanField(default=False)
+    # favorite = models.ManyToManyField(settings.AUTH_USER_MODEL)
+

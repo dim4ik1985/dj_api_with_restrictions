@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from advertisements.models import Advertisement
 
@@ -13,17 +14,23 @@ class UserSerializer(serializers.ModelSerializer):
                   'last_name',)
 
 
+# class FavoriteAdvertisementSerializer(serializers.Serializer):
+#     class Meta:
+#         model = FavoriteAdvertisement
+#         fields = ['user', 'favorite']
+
+
 class AdvertisementSerializer(serializers.ModelSerializer):
     """Serializer для объявления."""
 
     creator = UserSerializer(
         read_only=True,
     )
+    # favorites = FavoriteAdvertisementSerializer(many=True)
 
     class Meta:
         model = Advertisement
-        fields = ('id', 'title', 'description', 'creator',
-                  'status', 'created_at', )
+        fields = '__all__'
 
     def create(self, validated_data):
         """Метод для создания"""
@@ -34,6 +41,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         # обратите внимание на `context` – он выставляется автоматически
         # через методы ViewSet.
         # само поле при этом объявляется как `read_only=True`
+        fields = '__all__'
         validated_data["creator"] = self.context["request"].user
         return super().create(validated_data)
 
@@ -41,5 +49,8 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         """Метод для валидации. Вызывается при создании и обновлении."""
 
         # TODO: добавьте требуемую валидацию
+        if Advertisement.objects.filter(creator=self.context["request"].user).filter(status='OPEN').count() >= 3 \
+            and not data.get("status") == 'CLOSED':
+            raise ValidationError('Превышен лимит открытых объявлений!')
 
         return data
